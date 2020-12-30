@@ -19,11 +19,49 @@ PoliceBlips = {
 	end
 }
 
-function PoliceBlips:add(serverID, type)
+function PoliceBlips:add(serverID, type, number)
     type = tonumber(type) or 1
     self.active[serverID] = {
-        type = type
+        type = type,
+        number = number
     }
+end
+
+function PoliceBlips:setNumber(serverID, number)
+    number = tonumber(number)
+    if not number then
+        return
+    end
+    if self.active[serverID] then
+        self.active[serverID].number = number
+    end
+end
+
+function PoliceBlips:setType(serverID, type)
+    type = tonumber(type)
+    if not type then
+        return
+    end
+    if self.active[serverID] then
+        self.active[serverID].type = type
+    end
+end
+
+function PoliceBlips:setCallsign(serverID, callsign)
+    if not callsign then
+        return
+    end
+
+    local letter = callsign:sub(1,1)
+    local number = tonumber(callsign:sub(3))
+
+    if not number or not Config.PoliceBlips.callsigns[letter] then
+        return false
+    end
+
+    PoliceBlips:setNumber(serverID, number)
+    PoliceBlips:setType(serverID, Config.PoliceBlips.callsigns[letter])
+    return true
 end
 
 function PoliceBlips:remove(serverID)
@@ -37,8 +75,8 @@ function PoliceBlips:remove(serverID)
 end
 
 function PoliceBlips:hide()
-    if self.updateBlips then
-        self.updateBlips = false
+    if self.blips then
+        self.blips = false
     end
 end
 
@@ -83,13 +121,13 @@ AddEventHandler(
 RegisterNetEvent('police:addPlayerBlip')
 AddEventHandler(
     'police:addPlayerBlip',
-    function(serverID, type)
+    function(serverID, type, number)
         serverID = tonumber(serverID)
         if source > 0 or not serverID or serverID < 1 or not GetPlayerIdentifier(serverID, 0) then
             return
         end
         type = tonumber(type) or 1
-        PoliceBlips:add(serverID, type)
+        PoliceBlips:add(serverID, type, number)
     end
 )
 
@@ -102,6 +140,21 @@ AddEventHandler(
             return
         end
         PoliceBlips:remove(serverID)
+    end
+)
+
+RegisterNetEvent('police:setCallsign')
+AddEventHandler(
+    'police:setCallsign',
+    function(callsign, callback)
+        if source < 1 then
+            return
+        end
+        if not PoliceBlips:setCallsign(source, callsign) then
+            sendMessage(source, "Not a valid callsign.")
+        else
+            sendMessage(source, ("Changed callsign to %s."):format(callsign))
+        end
     end
 )
 

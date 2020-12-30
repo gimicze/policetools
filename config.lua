@@ -20,9 +20,19 @@ Config.Tint = {
 }
 
 Config.PoliceBlips = {
+    callsigns = { -- Sets which marker type (color) should the specified callsign prefix use
+        ["L"] = 1, -- e.g. L-21
+        ["T"] = 3,
+        ["C"] = 2,
+        ["G"] = 4,
+        ["H"] = 5,
+    },
     colors = {
-        3,
-        2
+        63,
+        25,
+        18,
+        82,
+        65
     },
     enableESX = "police" -- Set to false if you don't want to use ESX jobs
 }
