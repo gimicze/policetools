@@ -8,14 +8,14 @@
 --              CHAT              --
 --================================--
 
-function sendMessage(source, text, customName)
+function sendMessage(source, text, name)
 	TriggerClientEvent(
 		"chat:addMessage",
 		source,
 		{
 			templateId = "policetools",
 			args = {
-				((customName ~= nil) and customName or "PoliceTools"),
+				name or "PoliceTools",
 				text
 			}
 		}

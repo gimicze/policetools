@@ -43,7 +43,7 @@ function PoliceBlips:hide()
 end
 
 function PoliceBlips:updateBlips(frequency)
-    frequency = tonumber(frequency) or 7500
+    frequency = tonumber(frequency) or 3000
     self.updateBlips = true
     Citizen.CreateThread(
         function()
@@ -156,6 +156,10 @@ RegisterCommand(
 --================================--
 
 if Config.PoliceBlips.enableESX then
+    ESX = nil
+
+    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
     RegisterNetEvent("esx:setJob")
     AddEventHandler(
         "esx:setJob",
