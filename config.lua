@@ -21,7 +21,7 @@ Config.Tint = {
 
 Config.PoliceBlips = {
     colors = {
-        12,
+        3,
         2
     },
     enableESX = "police" -- Set to false if you don't want to use ESX jobs

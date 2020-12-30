@@ -20,10 +20,10 @@ function PoliceBlips:updateAll(activeBlips)
 end
 
 function PoliceBlips:update(playerID, x, y, z, type)
-    if playerID == GetPlayerServerId(PlayerPedId()) then
+    if playerID == GetPlayerServerId(PlayerId()) then
         return
     end
-    local color = Config.PoliceBlips.colors[type] or 12
+    local color = Config.PoliceBlips.colors[type] or Config.PoliceBlips.colors[1]
     if self.active[playerID] == nil then
         self.active[playerID] = AddBlipForCoord(x, y, z)
         SetBlipScale(self.active[playerID], 1.0)

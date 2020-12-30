@@ -44,10 +44,10 @@ end
 
 function PoliceBlips:updateBlips(frequency)
     frequency = tonumber(frequency) or 3000
-    self.updateBlips = true
+    self.blips = true
     Citizen.CreateThread(
         function()
-            while self.updateBlips do
+            while self.blips do
                 Citizen.Wait(frequency)
                 for k, v in pairs(self.active) do
                     self.active[k].coords = GetEntityCoords(GetPlayerPed(k))
@@ -62,7 +62,7 @@ function PoliceBlips:updateBlips(frequency)
         end
     )
     return function()
-        self.updateBlips = false
+        self.blips = false
     end
 end
 
