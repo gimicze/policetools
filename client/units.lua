@@ -17,10 +17,7 @@ UnitsRadar = {
 function UnitsRadar:updateAll(activeBlips)
     if not self.sentCallsign then
         self.sentCallsign = true
-        local callsign = GetResourceKvpString("callsign")
-        if callsign then
-            UnitsRadar:setCallsign(callsign)
-        end
+        self:sendCallsign()
     end
     for k, v in pairs(activeBlips) do
         self:update(k, v.coords.x, v.coords.y, v.coords.z, v.type, v.number)
@@ -74,6 +71,13 @@ function UnitsRadar:setCallsign(callsign)
         if number and Config.UnitsRadar.callsigns[letter] then
             SetResourceKvp("callsign", callsign)
         end
+    end
+end
+
+function UnitsRadar:sendCallsign()
+    local callsign = GetResourceKvpString("callsign")
+    if callsign then
+        UnitsRadar:setCallsign(callsign)
     end
 end
 
@@ -138,5 +142,13 @@ AddEventHandler(
     'police:updateBlips',
     function(blips)
         UnitsRadar:updateAll(blips)
+    end
+)
+
+RegisterNetEvent('police:requestUnitInfo')
+AddEventHandler(
+    'police:requestUnitInfo',
+    function()
+        UnitsRadar:sendCallsign()
     end
 )

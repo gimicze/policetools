@@ -9,7 +9,8 @@
 --================================--
 
 UnitsRadar = {
-	active = {},
+    active = {},
+    subscribers = {},
 	__index = self,
 	init = function(o)
 		o = o or {active = {}}
@@ -19,12 +20,23 @@ UnitsRadar = {
 	end
 }
 
-function UnitsRadar:addUnit(serverID, type, number)
+function UnitsRadar:subscribe(serverID) 
+    self.subscribers[serverID] = true
+end
+
+function UnitsRadar:unsubscribe(serverID) 
+    self.subscribers[serverID] = nil
+end
+
+function UnitsRadar:addUnit(serverID, type, number, subscribe)
     type = tonumber(type) or 1
     self.active[serverID] = {
         type = type,
         number = number
     }
+    if subscribe ~= false then
+        self:subscribe(serverID)
+    end
 end
 
 function UnitsRadar:setUnitNumber(serverID, number)
@@ -64,11 +76,14 @@ function UnitsRadar:setCallsign(serverID, callsign)
     return true
 end
 
-function UnitsRadar:removeUnit(serverID)
+function UnitsRadar:removeUnit(serverID, unsubscribe)
     if self.active[serverID] then
         self.active[serverID] = nil
-        TriggerClientEvent('police:removeBlips', serverID)
-        for k, v in pairs(self.active) do
+        if unsubscribe ~= false then
+            TriggerClientEvent('police:removeBlips', serverID)
+            self:unsubscribe(serverID)
+        end
+        for k, v in pairs(self.subscribers) do
             TriggerClientEvent('police:removeUnit', k, serverID)
         end
     end
@@ -77,6 +92,25 @@ end
 function UnitsRadar:hide()
     if self.blips then
         self.blips = false
+    end
+end
+
+function UnitsRadar:hideUnit(serverID)
+    if self.active[serverID] then
+        self:removeUnit(serverID, false)
+    end
+end
+
+function UnitsRadar:showUnit(serverID)
+    if not self.active[serverID] then
+        self:addUnit(serverID, nil, nil, false)
+        self:requestInfo(serverID)
+    end
+end
+
+function UnitsRadar:requestInfo(serverID)
+    if self.active[serverID] then
+        TriggerClientEvent('police:requestUnitInfo', serverID)
     end
 end
 
@@ -90,11 +124,11 @@ function UnitsRadar:updateBlips(frequency)
                 for k, v in pairs(self.active) do
                     self.active[k].coords = GetEntityCoords(GetPlayerPed(k))
                 end
-                for k, v in pairs(self.active) do
+                for k, v in pairs(self.subscribers) do
                     TriggerClientEvent('police:updateBlips', k, self.active)
                 end
             end
-            for k, v in pairs(self.active) do
+            for k, v in pairs(self.subscribers) do
                 TriggerClientEvent('police:removeBlips', k)
             end
         end
@@ -192,7 +226,15 @@ RegisterCommand(
 			sendMessage(source, ("Subscribed %s to police radar."):format(GetPlayerName(serverId)))
         elseif action == "remove" then
             UnitsRadar:removeUnit(serverId)
-			sendMessage(source, ("Unsubscribed %s from police radar."):format(GetPlayerName(serverId)))
+            sendMessage(source, ("Unsubscribed %s from police radar."):format(GetPlayerName(serverId)))
+        elseif action == "hide" then
+            local userId = (serverId and serverId > 0) and serverId or source
+            UnitsRadar:hideUnit(userId)
+			sendMessage(source, ("Hidden %s on the police radar."):format(userId == source and "yourself" or GetPlayerName(serverId)))
+        elseif action == "show" then
+            local userId = (serverId and serverId > 0) and serverId or source
+            UnitsRadar:showUnit(userId)
+			sendMessage(source, ("Shown %s on the police radar."):format(userId == source and "yourself" or GetPlayerName(serverId)))
         elseif action == "off" then
             UnitsRadar:hide()
         elseif action == "on" then
