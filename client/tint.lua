@@ -26,7 +26,7 @@ function CheckNearestVehicleWindowTint()
     
     if vehicle then
         local tint = GetVehicleWindowTint(vehicle) + 2
-        local message = Config.Tint.allowed[tint] and ("Window tint <b>within range.</b> (%s)"):format(windowTints[tint]) or ("Window tint <b>exceeds allowed range.</b> (%s)"):format(windowTints[tint])
+        local message = Config.Tint.allowed[tint] and ("Window tint within range. (%s)"):format(windowTints[tint]) or ("Window tint exceeds allowed range. (%s)"):format(windowTints[tint])
         sendMessage(message, "Tint Meter")
         return tint
     else
