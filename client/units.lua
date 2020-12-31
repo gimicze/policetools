@@ -1,5 +1,5 @@
 --================================--
---       POLICE TOOLS v1.0.0      --
+--       POLICE TOOLS v1.1.0      --
 --            by GIMI             --
 --      License: GNU GPL 3.0      --
 --================================--
@@ -8,18 +8,18 @@
 --          BLIP MANAGER          --
 --================================--
 
-PoliceBlips = {
+UnitsRadar = {
     sentCallsign = false,
     active = {},
 	__index = self
 }
 
-function PoliceBlips:updateAll(activeBlips)
-    if not sentCallsign then
-        sentCallsign = true
+function UnitsRadar:updateAll(activeBlips)
+    if not self.sentCallsign then
+        self.sentCallsign = true
         local callsign = GetResourceKvpString("callsign")
         if callsign then
-            PoliceBlips:setCallsign(callsign)
+            UnitsRadar:setCallsign(callsign)
         end
     end
     for k, v in pairs(activeBlips) do
@@ -27,11 +27,11 @@ function PoliceBlips:updateAll(activeBlips)
     end
 end
 
-function PoliceBlips:update(playerID, x, y, z, type, number)
+function UnitsRadar:update(playerID, x, y, z, type, number)
     if playerID == GetPlayerServerId(PlayerId()) then
         return
     end
-    local color = Config.PoliceBlips.colors[type] or Config.PoliceBlips.colors[1]
+    local color = Config.UnitsRadar.colors[type] or Config.UnitsRadar.colors[1]
     if self.active[playerID] == nil then
         self.active[playerID] = AddBlipForCoord(x, y, z)
         SetBlipScale(self.active[playerID], 0.8)
@@ -49,24 +49,31 @@ function PoliceBlips:update(playerID, x, y, z, type, number)
     SetBlipColour(self.active[playerID], color)
 end
 
-function PoliceBlips:remove(playerID)
+function UnitsRadar:remove(playerID)
     if self.active[playerID] then
         RemoveBlip(self.active[playerID])
         self.active[playerID] = nil
     end
 end
 
-function PoliceBlips:removeAll()
+function UnitsRadar:removeAll()
+    self.sentCallsign = false
     for k, v in pairs(self.active) do
         self:remove(k)
     end
 end
 
-function PoliceBlips:setCallsign(callsign)
+function UnitsRadar:setCallsign(callsign)
     callsign = tostring(callsign)
     if callsign then
-        TriggerServerEvent('police:setCallsign', callsign)
-        SetResourceKvp("callsign", callsign)
+        TriggerServerEvent('police:setUnitCallsign', callsign)
+
+        local letter = callsign:sub(1,1)
+        local number = tonumber(callsign:sub(3))
+
+        if number and Config.UnitsRadar.callsigns[letter] then
+            SetResourceKvp("callsign", callsign)
+        end
     end
 end
 
@@ -78,7 +85,7 @@ RegisterCommand(
     'callsign',
     function(source, args, rawCommand)
         local callsign = tostring(args[1])
-        PoliceBlips:setCallsign(callsign)
+        UnitsRadar:setCallsign(callsign)
     end,
     false
 )
@@ -87,7 +94,7 @@ RegisterCommand(
     'cs',
     function(source, args, rawCommand)
         local callsign = tostring(args[1])
-        PoliceBlips:setCallsign(callsign)
+        UnitsRadar:setCallsign(callsign)
     end,
     false
 )
@@ -110,11 +117,11 @@ TriggerEvent('chat:addSuggestion', '/cs', 'Changes your callsign shown on the ma
 --              SYNC              --
 --================================--
 
-RegisterNetEvent('police:removeBlip')
+RegisterNetEvent('police:removeUnit')
 AddEventHandler(
-    'police:removeBlip',
+    'police:removeUnit',
     function(playerID)
-        PoliceBlips:remove(playerID)
+        UnitsRadar:remove(playerID)
     end
 )
 
@@ -122,7 +129,7 @@ RegisterNetEvent('police:removeBlips')
 AddEventHandler(
     'police:removeBlips',
     function()
-        PoliceBlips:removeAll()
+        UnitsRadar:removeAll()
     end
 )
 
@@ -130,6 +137,6 @@ RegisterNetEvent('police:updateBlips')
 AddEventHandler(
     'police:updateBlips',
     function(blips)
-        PoliceBlips:updateAll(blips)
+        UnitsRadar:updateAll(blips)
     end
 )

@@ -1,5 +1,5 @@
 --================================--
---       POLICE TOOLS v1.0.0      --
+--       POLICE TOOLS v1.1.0      --
 --            by GIMI             --
 --      License: GNU GPL 3.0      --
 --================================--
@@ -26,11 +26,11 @@ function CheckNearestVehicleWindowTint()
     
     if vehicle then
         local tint = GetVehicleWindowTint(vehicle) + 2
-        local message = Config.Tint.allowed[tint] and ("Window tint within range. (%s)"):format(windowTints[tint]) or ("Window tint exceeds allowed range. (%s)"):format(windowTints[tint])
+        local message = Config.Tint.allowed[tint] and ("Window tint <b>within range.</b> (%s)"):format(windowTints[tint]) or ("Window tint <b>exceeds allowed range.</b> (%s)"):format(windowTints[tint])
         sendMessage(message, "Tint Meter")
         return tint
     else
-        sendMessage("You aren't near any vehicle.", "Tint Meter")
+        sendMessage("No vehicle nearby.", "Tint Meter")
         return false
     end
 end

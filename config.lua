@@ -19,7 +19,7 @@ Config.Tint = {
     }
 }
 
-Config.PoliceBlips = {
+Config.UnitsRadar = {
     callsigns = { -- Sets which marker type (color) should the specified callsign prefix use
         ["L"] = 1, -- e.g. L-21
         ["T"] = 3,

@@ -1,5 +1,5 @@
 --================================--
---       POLICE TOOLS v1.0.0      --
+--       POLICE TOOLS v1.1.0      --
 --            by GIMI             --
 --      License: GNU GPL 3.0      --
 --================================--
@@ -8,7 +8,7 @@
 --          BLIP MANAGER          --
 --================================--
 
-PoliceBlips = {
+UnitsRadar = {
 	active = {},
 	__index = self,
 	init = function(o)
@@ -19,7 +19,7 @@ PoliceBlips = {
 	end
 }
 
-function PoliceBlips:add(serverID, type, number)
+function UnitsRadar:addUnit(serverID, type, number)
     type = tonumber(type) or 1
     self.active[serverID] = {
         type = type,
@@ -27,7 +27,7 @@ function PoliceBlips:add(serverID, type, number)
     }
 end
 
-function PoliceBlips:setNumber(serverID, number)
+function UnitsRadar:setUnitNumber(serverID, number)
     number = tonumber(number)
     if not number then
         return
@@ -37,7 +37,7 @@ function PoliceBlips:setNumber(serverID, number)
     end
 end
 
-function PoliceBlips:setType(serverID, type)
+function UnitsRadar:setUnitType(serverID, type)
     type = tonumber(type)
     if not type then
         return
@@ -47,7 +47,7 @@ function PoliceBlips:setType(serverID, type)
     end
 end
 
-function PoliceBlips:setCallsign(serverID, callsign)
+function UnitsRadar:setCallsign(serverID, callsign)
     if not callsign then
         return
     end
@@ -55,32 +55,32 @@ function PoliceBlips:setCallsign(serverID, callsign)
     local letter = callsign:sub(1,1)
     local number = tonumber(callsign:sub(3))
 
-    if not number or not Config.PoliceBlips.callsigns[letter] then
+    if not number or not Config.UnitsRadar.callsigns[letter] then
         return false
     end
 
-    PoliceBlips:setNumber(serverID, number)
-    PoliceBlips:setType(serverID, Config.PoliceBlips.callsigns[letter])
+    UnitsRadar:setUnitNumber(serverID, number)
+    UnitsRadar:setUnitType(serverID, Config.UnitsRadar.callsigns[letter])
     return true
 end
 
-function PoliceBlips:remove(serverID)
+function UnitsRadar:removeUnit(serverID)
     if self.active[serverID] then
         self.active[serverID] = nil
         TriggerClientEvent('police:removeBlips', serverID)
         for k, v in pairs(self.active) do
-            TriggerClientEvent('police:removeBlip', k, serverID)
+            TriggerClientEvent('police:removeUnit', k, serverID)
         end
     end
 end
 
-function PoliceBlips:hide()
+function UnitsRadar:hide()
     if self.blips then
         self.blips = false
     end
 end
 
-function PoliceBlips:updateBlips(frequency)
+function UnitsRadar:updateBlips(frequency)
     frequency = tonumber(frequency) or 3000
     self.blips = true
     Citizen.CreateThread(
@@ -104,7 +104,7 @@ function PoliceBlips:updateBlips(frequency)
     end
 end
 
-PoliceBlips:updateBlips()
+UnitsRadar:updateBlips()
 
 --================================--
 --              SYNC              --
@@ -114,43 +114,43 @@ RegisterNetEvent('playerDropped')
 AddEventHandler(
 	'playerDropped',
     function()
-        PoliceBlips:remove(source)
+        UnitsRadar:removeUnit(source)
     end
 )
 
-RegisterNetEvent('police:addPlayerBlip')
+RegisterNetEvent('police:addUnit')
 AddEventHandler(
-    'police:addPlayerBlip',
+    'police:addUnit',
     function(serverID, type, number)
         serverID = tonumber(serverID)
         if source > 0 or not serverID or serverID < 1 or not GetPlayerIdentifier(serverID, 0) then
             return
         end
         type = tonumber(type) or 1
-        PoliceBlips:add(serverID, type, number)
+        UnitsRadar:addUnit(serverID, type, number)
     end
 )
 
-RegisterNetEvent('police:addPlayerBlip')
+RegisterNetEvent('police:removeUnit')
 AddEventHandler(
-    'police:removePlayerBlip',
+    'police:removeUnit',
     function(serverID, type)
         serverID = tonumber(serverID)
         if source > 0 or not serverID or serverID < 1 then
             return
         end
-        PoliceBlips:remove(serverID)
+        UnitsRadar:removeUnit(serverID)
     end
 )
 
-RegisterNetEvent('police:setCallsign')
+RegisterNetEvent('police:setUnitCallsign')
 AddEventHandler(
-    'police:setCallsign',
+    'police:setUnitCallsign',
     function(callsign, callback)
         if source < 1 then
             return
         end
-        if not PoliceBlips:setCallsign(source, callsign) then
+        if not UnitsRadar:setCallsign(source, callsign) then
             sendMessage(source, "Not a valid callsign.")
         else
             sendMessage(source, ("Changed callsign to %s."):format(callsign))
@@ -188,15 +188,15 @@ RegisterCommand(
 
         if action == "add" then
             local type = tonumber(args[3]) or 1
-			PoliceBlips:add(serverId, type)
+			UnitsRadar:addUnit(serverId, type)
 			sendMessage(source, ("Subscribed %s to police radar."):format(GetPlayerName(serverId)))
         elseif action == "remove" then
-            PoliceBlips:remove(serverId)
+            UnitsRadar:removeUnit(serverId)
 			sendMessage(source, ("Unsubscribed %s from police radar."):format(GetPlayerName(serverId)))
         elseif action == "off" then
-            PoliceBlips:hide()
+            UnitsRadar:hide()
         elseif action == "on" then
-            PoliceBlips:updateBlips()
+            UnitsRadar:updateBlips()
         else
 			sendMessage(source, "Invalid action.")
 		end
@@ -208,7 +208,7 @@ RegisterCommand(
 --         AUTO-SUBSCRIBE         --
 --================================--
 
-if Config.PoliceBlips.enableESX then
+if Config.UnitsRadar.enableESX then
     ESX = nil
 
     TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -219,10 +219,10 @@ if Config.PoliceBlips.enableESX then
         function(source)
             local xPlayer = ESX.GetPlayerFromId(source)
     
-            if xPlayer.job.name == Config.PoliceBlips.enableESX then
-                PoliceBlips:add(source)
-            elseif PoliceBlips.active[source] then
-                PoliceBlips:remove(source)
+            if xPlayer.job.name == Config.UnitsRadar.enableESX then
+                UnitsRadar:addUnit(source)
+            elseif UnitsRadar.active[source] then
+                UnitsRadar:removeUnit(source)
             end
         end
     )
@@ -231,10 +231,10 @@ if Config.PoliceBlips.enableESX then
     AddEventHandler(
         "esx:playerLoaded",
         function(source, xPlayer)    
-            if xPlayer.job.name == Config.PoliceBlips.enableESX and not PoliceBlips.active[source] then
-                PoliceBlips:add(source)
-            elseif PoliceBlips.active[source] then
-                PoliceBlips:remove(source)
+            if xPlayer.job.name == Config.UnitsRadar.enableESX and not UnitsRadar.active[source] then
+                UnitsRadar:addUnit(source)
+            elseif UnitsRadar.active[source] then
+                UnitsRadar:removeUnit(source)
             end
         end
     )
