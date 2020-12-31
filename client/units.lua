@@ -71,7 +71,7 @@ function PoliceBlips:setCallsign(callsign)
 end
 
 --================================--
---            CALLSIGN            --
+--            COMMANDS            --
 --================================--
 
 RegisterCommand(
@@ -82,6 +82,29 @@ RegisterCommand(
     end,
     false
 )
+
+RegisterCommand(
+    'cs',
+    function(source, args, rawCommand)
+        local callsign = tostring(args[1])
+        PoliceBlips:setCallsign(callsign)
+    end,
+    false
+)
+
+TriggerEvent('chat:addSuggestion', '/callsign', 'Changes your callsign shown on the map', {
+	{
+		name = "callsign",
+		help = "Your callsign (e.g. L-1)"
+	}
+})
+
+TriggerEvent('chat:addSuggestion', '/cs', 'Changes your callsign shown on the map', {
+	{
+		name = "callsign",
+		help = "Your callsign (e.g. L-1)"
+	}
+})
 
 --================================--
 --              SYNC              --
