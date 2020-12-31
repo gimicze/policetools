@@ -1,4 +1,4 @@
-# Police Tools v1.0
+# Police Tools v1.1
 
 A FiveM resource containing some tools / essentials for the police.
 
@@ -22,6 +22,7 @@ start policetools
 # Usage & Commands
 
 `/tint` - *Checks the nearest vehicle's window tint.*
+`/callsign <callsign>` - *Sets the callsign to the specified one, will change your blip's appearance on the map. (e.g. L-11 -> blue dot with 11 in it¨)*
 
 # Known bugs
 *None! Feel free to open issue when you find any!*
