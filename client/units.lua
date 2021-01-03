@@ -118,6 +118,30 @@ TriggerEvent('chat:addSuggestion', '/cs', 'Changes your callsign shown on the ma
 })
 
 --================================--
+--             BIGMAP             --
+--================================--
+
+local stopBigmap = nil
+
+RegisterCommand(
+    '+bigmap',
+    function()
+        SetBigmapActive(true, false)
+    end,
+    false
+)
+
+RegisterCommand(
+    '-bigmap',
+    function()
+        SetBigmapActive(false, false)
+    end,
+    false
+)
+
+RegisterKeyMapping('+bigmap', 'Expand / shrink minimap', 'keyboard', Config.UnitsRadar.bigmapKey)
+
+--================================--
 --              SYNC              --
 --================================--
 

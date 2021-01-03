@@ -34,5 +34,6 @@ Config.UnitsRadar = {
         82,
         65
     },
-    enableESX = "police" -- Set to false if you don't want to use ESX jobs
+    enableESX = "police", -- Set to false if you don't want to use ESX jobs
+    bigmapKey = "x" -- Sets the default keybind to show big minimap (set to nil if you don't want to set any default bind)
 }
