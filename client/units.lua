@@ -148,7 +148,7 @@ RegisterKeyMapping('+bigmap', 'Expand / shrink minimap', 'keyboard', Config.Unit
 RegisterNetEvent('police:removeUnit')
 AddEventHandler(
     'police:removeUnit',
-    function(playerID)
+    function(playerID, unsubscribe)
         UnitsRadar:remove(playerID)
     end
 )

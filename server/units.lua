@@ -20,7 +20,7 @@ UnitsRadar = {
 	end
 }
 
-function UnitsRadar:subscribe(serverID) 
+function UnitsRadar:subscribe(serverID) -- Allows to "spectate" units radar without being shown on the map
     self.subscribers[serverID] = true
 end
 
@@ -155,13 +155,61 @@ AddEventHandler(
 RegisterNetEvent('police:addUnit')
 AddEventHandler(
     'police:addUnit',
-    function(serverID, type, number)
+    function(serverID, type, number, subscribe)
         serverID = tonumber(serverID)
         if source > 0 or not serverID or serverID < 1 or not GetPlayerIdentifier(serverID, 0) then
             return
         end
         type = tonumber(type) or 1
-        UnitsRadar:addUnit(serverID, type, number)
+        UnitsRadar:addUnit(serverID, type, number, subscribe)
+    end
+)
+
+RegisterNetEvent('police:hideUnit')
+AddEventHandler(
+    'police:hideUnit',
+    function(serverID)
+        serverID = tonumber(serverID)
+        if source > 0 or not serverID or serverID < 1 then
+            return
+        end
+        UnitsRadar:hideUnit(serverID)
+    end
+)
+
+RegisterNetEvent('police:showUnit')
+AddEventHandler(
+    'police:showUnit',
+    function(serverID)
+        serverID = tonumber(serverID)
+        if source > 0 or not serverID or serverID < 1 then
+            return
+        end
+        UnitsRadar:shotUnit(serverID)
+    end
+)
+
+RegisterNetEvent('police:subscribe')
+AddEventHandler(
+    'police:subscribe',
+    function(serverID)
+        serverID = tonumber(serverID)
+        if source > 0 or not serverID or serverID < 1 then
+            return
+        end
+        UnitsRadar:subscribe(serverID)
+    end
+)
+
+RegisterNetEvent('police:unsubscribe')
+AddEventHandler(
+    'police:unsubscribe',
+    function(serverID)
+        serverID = tonumber(serverID)
+        if source > 0 or not serverID or serverID < 1 then
+            return
+        end
+        UnitsRadar:unsubscribe(serverID)
     end
 )
 
