@@ -3,7 +3,7 @@ fx_version 'adamant'
 games { 'gta5' }
 
 author 'GIMI'
-version '1.0.0'
+version '1.1.2'
 description 'Blips and tint meter for police'
 
 client_scripts {

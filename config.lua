@@ -1,5 +1,5 @@
 --================================--
---       POLICE TOOLS v1.0.0      --
+--       POLICE TOOLS v1.1.2      --
 --            by GIMI             --
 --      License: GNU GPL 3.0      --
 --================================--
@@ -7,7 +7,7 @@
 Config = {}
 
 Config.Tint = {
-    allowed = {
+    allowed = { -- Set any of these to false to be shown as illegal by the script
         true, -- Stock
         true, -- None
         false, -- Pure Black
@@ -20,7 +20,7 @@ Config.Tint = {
 }
 
 Config.UnitsRadar = {
-    callsigns = { -- Sets which marker type (color) should the specified callsign prefix use
+    callsigns = { -- Sets which marker type (see colors below) should the specified callsign prefix use
         ["L"] = 1, -- e.g. L-21
         ["T"] = 3,
         ["C"] = 2,
@@ -28,12 +28,12 @@ Config.UnitsRadar = {
         ["H"] = 5,
     },
     colors = {
-        63,
-        25,
-        18,
+        63, -- Type 1 (set above to callsign prefix "L")
+        25, -- Type 2
+        18, -- etc.
         82,
         65
     },
-    enableESX = "police", -- Set to false if you don't want to use ESX jobs
+    enableESX = "police", -- Set to false if you don't want to use ESX jobs, if you do you can change this to the name of your police job
     bigmapKey = "x" -- Sets the default keybind to show big minimap (set to nil if you don't want to set any default bind)
 }
