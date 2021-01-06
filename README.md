@@ -23,7 +23,7 @@ start policetools
 
 `/tint` - *Checks the nearest vehicle's window tint.*
 
-`/callsign <callsign>` - *Sets the callsign to the specified one, will change your blip's appearance on the map. (e.g. L-11 -> blue dot with 11 in it¨)*
+`/callsign <callsign>` - *Sets the callsign to the specified one, will change your blip's appearance on the map. (e.g. L-11 -> blue dot with 11 in it)*
 
 # Known bugs
 *None! Feel free to open issue when you find any!*
