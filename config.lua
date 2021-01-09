@@ -1,5 +1,5 @@
 --================================--
---       POLICE TOOLS v1.1.2      --
+--       POLICE TOOLS v1.1.3      --
 --            by GIMI             --
 --      License: GNU GPL 3.0      --
 --================================--
@@ -35,5 +35,6 @@ Config.UnitsRadar = {
         65
     },
     enableESX = "police", -- Set to false if you don't want to use ESX jobs, if you do you can change this to the name of your police job
+    requireItem = "gps", -- Enabled only if you're using ESX (enableESX must be filled in); Sets the required item for the dispatch to register officers onto the map, registers it as usable -> officers may use the item to turn the radar on if it wasn't turned on automatically
     bigmapKey = "x" -- Sets the default keybind to show big minimap (set to nil if you don't want to set any default bind)
 }

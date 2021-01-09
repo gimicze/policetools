@@ -1,5 +1,5 @@
 --================================--
---       POLICE TOOLS v1.1.2      --
+--       POLICE TOOLS v1.1.3      --
 --            by GIMI             --
 --      License: GNU GPL 3.0      --
 --================================--
@@ -298,10 +298,14 @@ RegisterCommand(
 --         AUTO-SUBSCRIBE         --
 --================================--
 
+Config.UnitsRadar.enableESX = tostring(Config.UnitsRadar.enableESX)
+
 if Config.UnitsRadar.enableESX then
     ESX = nil
 
     TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+    Config.UnitsRadar.requireItem = tostring(Config.UnitsRadar.requireItem)
 
     RegisterNetEvent("esx:setJob")
     AddEventHandler(
@@ -309,7 +313,7 @@ if Config.UnitsRadar.enableESX then
         function(source)
             local xPlayer = ESX.GetPlayerFromId(source)
     
-            if xPlayer.job.name == Config.UnitsRadar.enableESX then
+            if xPlayer.job.name == Config.UnitsRadar.enableESX and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
                 UnitsRadar:addUnit(source)
             elseif UnitsRadar.active[source] then
                 UnitsRadar:removeUnit(source)
@@ -320,12 +324,27 @@ if Config.UnitsRadar.enableESX then
     RegisterNetEvent("esx:playerLoaded")
     AddEventHandler(
         "esx:playerLoaded",
-        function(source, xPlayer)    
-            if xPlayer.job.name == Config.UnitsRadar.enableESX and not UnitsRadar.active[source] then
+        function(source, xPlayer)
+            if xPlayer.job.name == Config.UnitsRadar.enableESX and not UnitsRadar.active[source] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
                 UnitsRadar:addUnit(source)
             elseif UnitsRadar.active[source] then
                 UnitsRadar:removeUnit(source)
             end
         end
     )
+
+    if Config.UnitsRadar.requireItem then
+        ESX.RegisterUsableItem(
+            Config.UnitsRadar.requireItem,
+            function(source)
+                local xPlayer = ESX.GetPlayerFromId(source)
+
+                if xPlayer.job.name == Config.UnitsRadar.enableESX and not UnitsRadar.active[source] then
+                    UnitsRadar:addUnit(source)
+                elseif UnitsRadar.active[source] then
+                    UnitsRadar:removeUnit(source)
+                end
+            end
+        )
+    end
 end
