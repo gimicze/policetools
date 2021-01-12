@@ -11,6 +11,7 @@
 UnitsRadar = {
     sentCallsign = false,
     active = {},
+    panic = {},
 	__index = self
 }
 
@@ -81,6 +82,32 @@ function UnitsRadar:sendCallsign()
     end
 end
 
+function UnitsRadar:panic(playerID)
+    if self.active[playerID] then
+        self.panic[playerID] = true
+        SetBlipFlashes(self.active[playerID], true)
+        SetBlipRoute(self.active[playerID], true)
+        SetBlipRouteColor(self.active[playerID], Config.UnitsRadar.panicColor)
+    end
+end
+
+function UnitsRadar:clearPanic(playerID)
+    playerID = tonumber(playerID)
+    if playerID then
+        if self.panic[playerID] and self.active[playerID] then
+            SetBlipFlashes(self.active[playerID], false)
+            SetBlipRoute(self.active[playerID], false)
+        end
+    else
+        for k, v in pairs(self.panic) do
+            if self.active[k] then
+                SetBlipFlashes(self.active[k], false)
+                SetBlipRoute(self.active[k], false)
+            end
+        end
+    end
+end
+
 --================================--
 --            COMMANDS            --
 --================================--
@@ -103,6 +130,26 @@ RegisterCommand(
     false
 )
 
+RegisterCommand(
+    'clearpanic',
+    function(source, args, rawCommands)
+        local panicID = tonumber(args[1])
+        panicID = panicID or nil
+        UnitsRadar:clearPanic(panicID)
+    end,
+    false
+)
+
+RegisterCommand(
+    'cp',
+    function(source, args, rawCommands)
+        local panicID = tonumber(args[1])
+        panicID = panicID or nil
+        UnitsRadar:clearPanic(panicID)
+    end,
+    false
+)
+
 TriggerEvent('chat:addSuggestion', '/callsign', 'Changes your callsign shown on the map', {
 	{
 		name = "callsign",
@@ -114,6 +161,22 @@ TriggerEvent('chat:addSuggestion', '/cs', 'Changes your callsign shown on the ma
 	{
 		name = "callsign",
 		help = "Your callsign (e.g. L-1)"
+	}
+})
+
+TriggerEvent('chat:addSuggestion', '/panic', 'Triggers the panic button')
+
+TriggerEvent('chat:addSuggestion', '/clearpanic', 'Clears the panicked units from the map', {
+	{
+		name = "panicID",
+		help = "Specify the panic ID if you only want to remove specific panic from the map"
+	}
+})
+
+TriggerEvent('chat:addSuggestion', '/cp', 'Clears the panicked units from the map', {
+	{
+		name = "panicID",
+		help = "Specify the panic ID if you only want to remove specific panic from the map"
 	}
 })
 
@@ -158,6 +221,14 @@ AddEventHandler(
     'police:removeBlips',
     function()
         UnitsRadar:removeAll()
+    end
+)
+
+RegisterNetEvent('police:panic')
+AddEventHandler(
+    'police:panic',
+    function(playerID)
+        UnitsRadar:panic(playerID)
     end
 )
 

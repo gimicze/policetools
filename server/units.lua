@@ -114,6 +114,18 @@ function UnitsRadar:requestInfo(serverID)
     end
 end
 
+function UnitsRadar:panic(serverID)
+    local success = false
+    if self.active[serverID] then
+        for k, v in pairs(self.subscribers) do
+            sendMessage(k, ("A unit triggered panic button! Panic #%s"):format(serverID), "Panic Button")
+            TriggerClientEvent('police:panic', k, serverID)
+        end
+        success = true
+    end
+    return success
+end
+
 function UnitsRadar:updateBlips(frequency)
     frequency = tonumber(frequency) or 3000
     self.blips = true
@@ -243,6 +255,19 @@ AddEventHandler(
 --================================--
 --            COMMANDS            --
 --================================--
+
+RegisterCommand(
+    'panic',
+    function(source, args, rawCommand)
+        if source > 0 then
+            local success = UnitsRadar:panic(source)
+            if not success then
+                sendMessage(source, "You cannot use the panic button.", "Panic Button")
+            end
+        end
+    end,
+    false
+)
 
 RegisterCommand(
 	'policeblip',
