@@ -164,21 +164,23 @@ TriggerEvent('chat:addSuggestion', '/cs', 'Changes your callsign shown on the ma
 	}
 })
 
-TriggerEvent('chat:addSuggestion', '/panic', 'Triggers the panic button')
+if Config.UnitsRadar.panicColor then
+    TriggerEvent('chat:addSuggestion', '/panic', 'Triggers the panic button')
 
-TriggerEvent('chat:addSuggestion', '/clearpanic', 'Clears the panicked units from the map', {
-	{
-		name = "panicID",
-		help = "Specify the panic ID if you only want to remove specific panic from the map"
-	}
-})
+    TriggerEvent('chat:addSuggestion', '/clearpanic', 'Clears the panicked units from the map', {
+        {
+            name = "panicID",
+            help = "Specify the panic ID if you only want to remove specific panic from the map"
+        }
+    })
 
-TriggerEvent('chat:addSuggestion', '/cp', 'Clears the panicked units from the map', {
-	{
-		name = "panicID",
-		help = "Specify the panic ID if you only want to remove specific panic from the map"
-	}
-})
+    TriggerEvent('chat:addSuggestion', '/cp', 'Clears the panicked units from the map', {
+        {
+            name = "panicID",
+            help = "Specify the panic ID if you only want to remove specific panic from the map"
+        }
+    })
+end
 
 --================================--
 --             BIGMAP             --
@@ -224,14 +226,6 @@ AddEventHandler(
     end
 )
 
-RegisterNetEvent('police:panic')
-AddEventHandler(
-    'police:panic',
-    function(playerID)
-        UnitsRadar:panic(playerID)
-    end
-)
-
 RegisterNetEvent('police:updateBlips')
 AddEventHandler(
     'police:updateBlips',
@@ -247,3 +241,13 @@ AddEventHandler(
         UnitsRadar:sendCallsign()
     end
 )
+
+if Config.UnitsRadar.panicColor then
+    RegisterNetEvent('police:panic')
+    AddEventHandler(
+        'police:panic',
+        function(playerID)
+            UnitsRadar:panic(playerID)
+        end
+    )
+end

@@ -256,18 +256,20 @@ AddEventHandler(
 --            COMMANDS            --
 --================================--
 
-RegisterCommand(
-    'panic',
-    function(source, args, rawCommand)
-        if source > 0 then
-            local success = UnitsRadar:panic(source)
-            if not success then
-                sendMessage(source, "You cannot use the panic button.", "Panic Button")
+if Config.UnitsRadar.panicColor then
+    RegisterCommand(
+        'panic',
+        function(source, args, rawCommand)
+            if source > 0 then
+                local success = UnitsRadar:panic(source)
+                if not success then
+                    sendMessage(source, "You cannot use the panic button.", "Panic Button")
+                end
             end
-        end
-    end,
-    false
-)
+        end,
+        false
+    )
+end
 
 RegisterCommand(
 	'policeblip',
