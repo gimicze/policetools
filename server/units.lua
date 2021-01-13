@@ -13,7 +13,7 @@ UnitsRadar = {
     subscribers = {},
 	__index = self,
 	init = function(o)
-		o = o or {active = {}}
+		o = o or {active = {}, subscribers = {}, callsigns = {}}
 		setmetatable(o, self)
 		self.__index = self
 		return o
@@ -71,6 +71,8 @@ function UnitsRadar:setCallsign(serverID, callsign)
         return false
     end
 
+    self.callsigns[serverID] = callsign
+
     UnitsRadar:setUnitNumber(serverID, number)
     UnitsRadar:setUnitType(serverID, Config.UnitsRadar.callsigns[letter])
     return true
@@ -79,6 +81,7 @@ end
 function UnitsRadar:removeUnit(serverID, unsubscribe)
     if self.active[serverID] then
         self.active[serverID] = nil
+        self.callsigns[serverID] = nil
         if unsubscribe ~= false then
             TriggerClientEvent('police:removeBlips', serverID)
             self:unsubscribe(serverID)
@@ -118,7 +121,8 @@ function UnitsRadar:panic(serverID)
     local success = false
     if self.active[serverID] then
         for k, v in pairs(self.subscribers) do
-            sendMessage(k, ("A unit triggered panic button! Panic #%s"):format(serverID), "Panic Button")
+            local message = self.callsigns[serverID] and ("Unit %s triggered panic button! Panic #%s"):format(self.callsigns[serverID], serverID) or ("A unit triggered panic button! Panic #%s"):format(serverID)
+            sendMessage(k, , "Panic Button")
             TriggerClientEvent('police:panic', k, serverID)
         end
         success = true
