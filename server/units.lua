@@ -122,7 +122,7 @@ function UnitsRadar:panic(serverID)
     if self.active[serverID] then
         for k, v in pairs(self.subscribers) do
             local message = self.callsigns[serverID] and ("Unit %s triggered panic button! Panic #%s"):format(self.callsigns[serverID], serverID) or ("A unit triggered panic button! Panic #%s"):format(serverID)
-            sendMessage(k, , "Panic Button")
+            sendMessage(k, message, "Panic Button")
             TriggerClientEvent('police:panic', k, serverID)
         end
         success = true
