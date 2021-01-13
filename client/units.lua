@@ -86,6 +86,7 @@ function UnitsRadar:panic(playerID)
     if self.active[playerID] then
         self._panic[playerID] = true
         SetBlipFlashes(self.active[playerID], true)
+        SetBlipFlashInterval(self.active[playerID], 1500)
         SetBlipRoute(self.active[playerID], true)
         SetBlipRouteColor(self.active[playerID], Config.UnitsRadar.panicColor)
     end
