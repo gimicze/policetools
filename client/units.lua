@@ -11,7 +11,7 @@
 UnitsRadar = {
     sentCallsign = false,
     active = {},
-    panic = {},
+    _panic = {},
 	__index = self
 }
 
@@ -84,7 +84,7 @@ end
 
 function UnitsRadar:panic(playerID)
     if self.active[playerID] then
-        self.panic[playerID] = true
+        self._panic[playerID] = true
         SetBlipFlashes(self.active[playerID], true)
         SetBlipRoute(self.active[playerID], true)
         SetBlipRouteColor(self.active[playerID], Config.UnitsRadar.panicColor)
@@ -94,12 +94,12 @@ end
 function UnitsRadar:clearPanic(playerID)
     playerID = tonumber(playerID)
     if playerID then
-        if self.panic[playerID] and self.active[playerID] then
+        if self._panic[playerID] and self.active[playerID] then
             SetBlipFlashes(self.active[playerID], false)
             SetBlipRoute(self.active[playerID], false)
         end
     else
-        for k, v in pairs(self.panic) do
+        for k, v in pairs(self._panic) do
             if self.active[k] then
                 SetBlipFlashes(self.active[k], false)
                 SetBlipRoute(self.active[k], false)
