@@ -38,6 +38,7 @@ function UnitsRadar:addUnit(serverID, type, number, subscribe)
     if subscribe ~= false then
         self:subscribe(serverID)
     end
+    sendMessage(serverID, "You're now shown on-duty.", "Radar")
 end
 
 function UnitsRadar:setUnitNumber(serverID, number)
@@ -90,6 +91,7 @@ function UnitsRadar:removeUnit(serverID, unsubscribe)
         for k, v in pairs(self.subscribers) do
             TriggerClientEvent('police:removeUnit', k, serverID)
         end
+        sendMessage(serverID, "You're now shown off-duty.", "Radar")
     end
 end
 
