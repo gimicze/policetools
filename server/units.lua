@@ -11,6 +11,7 @@
 UnitsRadar = {
     active = {},
     subscribers = {},
+    callsigns = {},
 	__index = self,
 	init = function(o)
 		o = o or {active = {}, subscribers = {}, callsigns = {}}
@@ -329,14 +330,24 @@ RegisterCommand(
 --         AUTO-SUBSCRIBE         --
 --================================--
 
-Config.UnitsRadar.enableESX = tostring(Config.UnitsRadar.enableESX)
+Config.UnitsRadar.enableESX = Config.UnitsRadar.enableESX and tostring(Config.UnitsRadar.enableESX) or false
 
 if Config.UnitsRadar.enableESX then
     ESX = nil
 
     TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-    Config.UnitsRadar.requireItem = tostring(Config.UnitsRadar.requireItem)
+    Config.UnitsRadar.requireItem = Config.UnitsRadar.requireItem and tostring(Config.UnitsRadar.requireItem) or false
+
+    local allowedJobs = {}
+
+    if type(Config.UnitsRadar.enableESX) == "table" then
+        for k, v in pairs(Config.UnitsRadar.enableESX) do
+            allowedJobs[v] = true
+        end
+    else
+        allowedJobs[Config.UnitsRadar.enableESX] = true
+    end
 
     RegisterNetEvent("esx:setJob")
     AddEventHandler(
@@ -344,7 +355,7 @@ if Config.UnitsRadar.enableESX then
         function(source)
             local xPlayer = ESX.GetPlayerFromId(source)
     
-            if xPlayer.job.name == Config.UnitsRadar.enableESX and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
+            if allowedJobs[xPlayer.job.name] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
                 UnitsRadar:addUnit(source)
             elseif UnitsRadar.active[source] then
                 UnitsRadar:removeUnit(source)
@@ -356,7 +367,7 @@ if Config.UnitsRadar.enableESX then
     AddEventHandler(
         "esx:playerLoaded",
         function(source, xPlayer)
-            if xPlayer.job.name == Config.UnitsRadar.enableESX and not UnitsRadar.active[source] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
+            if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[source] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
                 UnitsRadar:addUnit(source)
             elseif UnitsRadar.active[source] then
                 UnitsRadar:removeUnit(source)
@@ -370,7 +381,7 @@ if Config.UnitsRadar.enableESX then
             function(source)
                 local xPlayer = ESX.GetPlayerFromId(source)
 
-                if xPlayer.job.name == Config.UnitsRadar.enableESX and not UnitsRadar.active[source] then
+                if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[source] then
                     UnitsRadar:addUnit(source)
                 elseif UnitsRadar.active[source] then
                     UnitsRadar:removeUnit(source)

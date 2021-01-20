@@ -9,6 +9,7 @@
 --================================--
 
 UnitsRadar = {
+    serverID = GetPlayerServerId(PlayerId()),
     sentCallsign = false,
     active = {},
     _panic = {},
@@ -26,7 +27,7 @@ function UnitsRadar:updateAll(activeBlips)
 end
 
 function UnitsRadar:update(playerID, x, y, z, type, number)
-    if playerID == GetPlayerServerId(PlayerId()) then
+    if playerID == self.serverID then
         return
     end
     local color = Config.UnitsRadar.colors[type] or Config.UnitsRadar.colors[1]
@@ -84,11 +85,13 @@ end
 
 function UnitsRadar:panic(playerID)
     if self.active[playerID] then
+        ClearGpsMultiRoute()
         self._panic[playerID] = true
         SetBlipFlashes(self.active[playerID], true)
-        SetBlipFlashInterval(self.active[playerID], 1500)
-        SetBlipRoute(self.active[playerID], true)
-        SetBlipRouteColor(self.active[playerID], Config.UnitsRadar.panicColor)
+        SetBlipFlashInterval(self.active[playerID], 500)
+        StartGpsMultiRoute(Config.UnitsRadar.panicColor, true, true)
+        AddPointToGpsMultiRoute(GetBlipCoords(self.active[playerID]))
+        SetGpsMultiRouteRender(true)
     end
 end
 
@@ -97,16 +100,15 @@ function UnitsRadar:clearPanic(playerID)
     if playerID then
         if self._panic[playerID] and self.active[playerID] then
             SetBlipFlashes(self.active[playerID], false)
-            SetBlipRoute(self.active[playerID], false)
         end
     else
         for k, v in pairs(self._panic) do
             if self.active[k] then
                 SetBlipFlashes(self.active[k], false)
-                SetBlipRoute(self.active[k], false)
             end
         end
     end
+    ClearGpsMultiRoute()
 end
 
 --================================--
@@ -252,3 +254,17 @@ if Config.UnitsRadar.panicColor then
         end
     )
 end
+
+--================================--
+--            CLEAN-UP            --
+--================================--
+
+RegisterNetEvent('onResourceStart')
+AddEventHandler(
+    'onResourceStart',
+    function(resourceName)
+        if resourceName == GetCurrentResourceName() then
+            ClearGpsMultiRoute()
+        end
+    end
+)
