@@ -332,8 +332,6 @@ RegisterCommand(
 --         AUTO-SUBSCRIBE         --
 --================================--
 
-Config.UnitsRadar.enableESX = Config.UnitsRadar.enableESX and tostring(Config.UnitsRadar.enableESX) or false
-
 if Config.UnitsRadar.enableESX then
     ESX = nil
 
