@@ -69,7 +69,7 @@ function UnitsRadar:setCallsign(serverID, callsign)
     local letter = callsign:sub(1,1)
     local number = tonumber(callsign:sub(3))
 
-    if not number or not Config.UnitsRadar.callsigns[letter] then
+    if not number or not Config.UnitsRadar.callsigns[letter] or number > 99 then
         return false
     end
 
