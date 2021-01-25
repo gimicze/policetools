@@ -12,6 +12,7 @@ UnitsRadar = {
     serverID = GetPlayerServerId(PlayerId()),
     sentCallsign = false,
     active = {},
+    distant = {},
     _panic = {},
 	__index = self
 }
@@ -30,21 +31,34 @@ function UnitsRadar:update(playerID, x, y, z, type, number)
     if playerID == self.serverID then
         return
     end
+
     local color = Config.UnitsRadar.colors[type] or Config.UnitsRadar.colors[1]
+
+    if Config.UnitsRadar.usePlayerBlips then
+        local player = GetPlayerFromServerId(playerID)
+        local wasDistant = self.distant[playerID]
+        self.distant[playerID] = (player ~= -1)
+        if (wasDistant and not self.distant[playerID]) or (not wasDistant and self.distant[playerID]) then
+            self:remove(playerID)
+        end
+    end
+
     if self.active[playerID] == nil then
-        self.active[playerID] = AddBlipForCoord(x, y, z)
+        self.active[playerID] = self.distant[playerID] and AddBlipForCoord(x, y, z) or AddBlipForEntity(GetPlayerPed(player))
         SetBlipScale(self.active[playerID], 0.8)
         SetBlipSprite(self.active[playerID], 57)
         SetBlipCategory(self.active[playerID], 1)
         SetBlipHiddenOnLegend(self.active[playerID], true)
         SetBlipShrink(self.active[playerID], true)
         SetBlipPriority(self.active[playerID], 10)
-    else
+    elseif self.distant[playerID] then
         SetBlipCoords(self.active[playerID], x, y, z)
     end
+
     if number then
         ShowNumberOnBlip(self.active[playerID], number)
     end
+
     SetBlipColour(self.active[playerID], color)
 end
 
@@ -52,6 +66,7 @@ function UnitsRadar:remove(playerID)
     if self.active[playerID] then
         RemoveBlip(self.active[playerID])
         self.active[playerID] = nil
+        self.distant[playerID] = nil
     end
 end
 
