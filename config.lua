@@ -38,5 +38,5 @@ Config.UnitsRadar = {
     enableESX = "police", -- Set to false if you don't want to use ESX jobs, if you do you can change this to the name of your police job; Can be a table containing a list of allowed jobs - for example {'police', 'ambulance'}
     requireItem = "gps", -- Enabled only if you're using ESX (enableESX must be filled in); Sets the required item for the dispatch to register officers onto the map, registers it as usable -> officers may use the item to turn the radar on if it wasn't turned on automatically
     bigmapKey = "x", -- Sets the default keybind to show big minimap (set to nil if you don't want to set any default bind)
-    displayOnlyDistantPlayers = true -- When true, the script will only show blips for distant players (OneSync Infinity)
+    usePlayerBlips = true -- When true, the script will only show blips for distant players (OneSync Infinity)
 }
