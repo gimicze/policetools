@@ -46,12 +46,17 @@ function UnitsRadar:update(playerID, x, y, z, heading, type, number)
 
     if self.active[playerID] == nil then
         self.active[playerID] = self.distant[playerID] and AddBlipForCoord(x, y, z) or AddBlipForEntity(GetPlayerPed(player))
-        SetBlipScale(self.active[playerID], 0.8)
-        SetBlipSprite(self.active[playerID], 57)
+        SetBlipScale(self.active[playerID], 1.2)
+        SetBlipSprite(self.active[playerID], 1)
         SetBlipCategory(self.active[playerID], 1)
         SetBlipHiddenOnLegend(self.active[playerID], true)
         SetBlipShrink(self.active[playerID], true)
         SetBlipPriority(self.active[playerID], 10)
+        ShowHeightOnBlip(self.active[playerID], false)
+        if heading then
+            ShowHeadingIndicatorOnBlip(self.active[playerID], true)
+            SetBlipRotation(self.active[playerID], heading)
+        end
     elseif self.distant[playerID] then
         SetBlipCoords(self.active[playerID], x, y, z)
         if heading then
