@@ -23,11 +23,11 @@ function UnitsRadar:updateAll(activeBlips)
         self:sendCallsign()
     end
     for k, v in pairs(activeBlips) do
-        self:update(k, v.coords.x, v.coords.y, v.coords.z, v.type, v.number)
+        self:update(k, v.coords.x, v.coords.y, v.coords.z, v.heading, v.type, v.number)
     end
 end
 
-function UnitsRadar:update(playerID, x, y, z, type, number)
+function UnitsRadar:update(playerID, x, y, z, heading, type, number)
     if playerID == self.serverID then
         return
     end
@@ -39,7 +39,7 @@ function UnitsRadar:update(playerID, x, y, z, type, number)
         local wasDistant = self.distant[playerID]
         self.distant[playerID] = (player ~= -1)
         if (wasDistant and not self.distant[playerID]) or (not wasDistant and self.distant[playerID]) then
-            self:remove(playerID, false) -- The player's got into your scope / outside your scope -> remove the existing blip, it'll be re-created below with the new parameters
+            self:remove(playerID, false) -- The player's gotten into your scope / outside your scope -> remove the existing blip, it'll be re-created below with the new parameters
         end
     end
 
@@ -53,6 +53,9 @@ function UnitsRadar:update(playerID, x, y, z, type, number)
         SetBlipPriority(self.active[playerID], 10)
     elseif self.distant[playerID] then
         SetBlipCoords(self.active[playerID], x, y, z)
+        if heading then
+            SetBlipRotation(self.active[playerID], heading)
+        end
     end
 
     if number then

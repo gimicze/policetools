@@ -140,9 +140,13 @@ function UnitsRadar:updateBlips(frequency)
         function()
             while self.blips do
                 Citizen.Wait(frequency)
+                local playerPed = nil
                 for k, v in pairs(self.active) do
-                    self.active[k].coords = GetEntityCoords(GetPlayerPed(k))
+                    playerPed = GetPlayerPed(k)
+                    self.active[k].coords = GetEntityCoords(playerPed)
+                    self.active[k].heading = math.ceil(GetEntityHeading(playerPed))
                 end
+                playerPed = nil
                 for k, v in pairs(self.subscribers) do
                     TriggerClientEvent('police:updateBlips', k, self.active)
                 end
