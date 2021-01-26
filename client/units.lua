@@ -33,11 +33,12 @@ function UnitsRadar:update(playerID, x, y, z, heading, type, number)
     end
 
     local color = Config.UnitsRadar.colors[type] or Config.UnitsRadar.colors[1]
+    local player = nil
 
     if Config.UnitsRadar.usePlayerBlips then
-        local player = GetPlayerFromServerId(playerID)
+        player = GetPlayerFromServerId(playerID)
         local wasDistant = self.distant[playerID]
-        self.distant[playerID] = (player ~= -1)
+        self.distant[playerID] = (player == -1)
         if (wasDistant and not self.distant[playerID]) or (not wasDistant and self.distant[playerID]) then
             self:remove(playerID, false) -- The player's gotten into your scope / outside your scope -> remove the existing blip, it'll be re-created below with the new parameters
         end
