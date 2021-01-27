@@ -76,6 +76,8 @@ function UnitsRadar:setCallsign(serverID, callsign)
         for k, v in pairs(self.subscribers) do
             sendMessage(k, ("%s is now on duty."):format(callsign), "Radar")
         end
+    else
+        sendMessage(serverID, "You're now shown on duty.", "Radar")
     end
 
     self.callsigns[serverID] = callsign
@@ -90,6 +92,8 @@ function UnitsRadar:removeUnit(serverID, unsubscribe)
         for k, v in pairs(self.subscribers) do
             if Config.UnitsRadar.announceDuty and self.callsigns[serverID] then
                 sendMessage(k, ("%s went off duty."):format(self.callsigns[serverID]), "Radar")
+            else
+                sendMessage(serverID, "You're now shown off duty.", "Radar")
             end
             TriggerClientEvent('police:removeUnit', k, serverID)
         end
