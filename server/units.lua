@@ -38,7 +38,6 @@ function UnitsRadar:addUnit(serverID, type, number, subscribe)
     if subscribe ~= false then
         self:subscribe(serverID)
     end
-    sendMessage(serverID, "You're now shown on-duty.", "Radar")
 end
 
 function UnitsRadar:setUnitNumber(serverID, number)
@@ -73,6 +72,12 @@ function UnitsRadar:setCallsign(serverID, callsign)
         return false
     end
 
+    if Config.UnitsRadar.announceDuty and self.callsigns[serverID] == nil then
+        for k, v in pairs(self.subscribers) do
+            sendMessage(k, ("%s is now on duty."):format(callsign), "Radar")
+        end
+    end
+
     self.callsigns[serverID] = callsign
 
     UnitsRadar:setUnitNumber(serverID, number)
@@ -82,16 +87,18 @@ end
 
 function UnitsRadar:removeUnit(serverID, unsubscribe)
     if self.active[serverID] then
-        self.active[serverID] = nil
-        self.callsigns[serverID] = nil
-        if unsubscribe ~= false then
-            TriggerClientEvent('police:removeBlips', serverID)
-            self:unsubscribe(serverID)
-        end
         for k, v in pairs(self.subscribers) do
+            if Config.UnitsRadar.announceDuty and self.callsigns[serverID] then
+                sendMessage(k, ("%s went off duty."):format(self.callsigns[serverID]), "Radar")
+            end
             TriggerClientEvent('police:removeUnit', k, serverID)
         end
-        sendMessage(serverID, "You're now shown off-duty.", "Radar")
+        if unsubscribe ~= false then
+            self:unsubscribe(serverID)
+            TriggerClientEvent('police:removeBlips', serverID)
+        end
+        self.active[serverID] = nil
+        self.callsigns[serverID] = nil
     end
 end
 
@@ -258,7 +265,7 @@ AddEventHandler(
         if not UnitsRadar:setCallsign(source, callsign) then
             sendMessage(source, "Not a valid callsign.")
         else
-            sendMessage(source, ("Changed callsign to %s."):format(callsign))
+            sendMessage(source, ("Callsign set to %s."):format(callsign))
         end
     end
 )

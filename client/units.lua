@@ -22,16 +22,15 @@ function UnitsRadar:updateAll(activeBlips)
         self.sentCallsign = true
         self:sendCallsign()
     end
+
+    activeBlips[self.serverID] = nil
+
     for k, v in pairs(activeBlips) do
         self:update(k, v.coords.x, v.coords.y, v.coords.z, v.heading, v.type, v.number)
     end
 end
 
 function UnitsRadar:update(playerID, x, y, z, heading, type, number)
-    if playerID == self.serverID then
-        return
-    end
-
     local color = Config.UnitsRadar.colors[type] or Config.UnitsRadar.colors[1]
     local player = nil
 
@@ -215,25 +214,26 @@ end
 --             BIGMAP             --
 --================================--
 
-local stopBigmap = nil
+if Config.UnitsRadar.bigmapKey then
+    RegisterCommand(
+        '+bigmap',
+        function()
+            SetBigmapActive(true, false)
+        end,
+        false
+    )
 
-RegisterCommand(
-    '+bigmap',
-    function()
-        SetBigmapActive(true, false)
-    end,
-    false
-)
+    RegisterCommand(
+        '-bigmap',
+        function()
+            SetBigmapActive(false, false)
+        end,
+        false
+    )
 
-RegisterCommand(
-    '-bigmap',
-    function()
-        SetBigmapActive(false, false)
-    end,
-    false
-)
-
-RegisterKeyMapping('+bigmap', 'Expand / shrink minimap', 'keyboard', Config.UnitsRadar.bigmapKey)
+    Config.UnitsRadar.bigmapKey = Config.UnitsRadar.bigmapKey == true and nil or Config.UnitsRadar.bigmapKey
+    RegisterKeyMapping('+bigmap', 'Expand / shrink minimap', 'keyboard', Config.UnitsRadar.bigmapKey)
+end
 
 --================================--
 --              SYNC              --
