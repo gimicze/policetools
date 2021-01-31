@@ -1,4 +1,8 @@
-# Police Tools v1.1.6
+# Police Tools
+
+[![License GNU-GPL v3](https://img.shields.io/github/license/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/LICENSE)
+[![Total downloads](https://img.shields.io/github/v/release/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/release/latest)
+[![Total downloads](https://img.shields.io/github/downloads/gimicze/policetools/total?style=for-the-badge)](https://github.com/gimicze/policetools/release/latest)
 
 A FiveM resource containing some tools / essentials for the police.
 
