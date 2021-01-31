@@ -1,8 +1,8 @@
 # Police Tools
 
-[![License GNU-GPL v3](https://img.shields.io/github/license/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/LICENSE)
-[![Total downloads](https://img.shields.io/github/v/release/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/releases/latest)
-[![Total downloads](https://img.shields.io/github/downloads/gimicze/policetools/total?style=for-the-badge)](https://github.com/gimicze/policetools/releases/latest)
+[![License GNU-GPL v3](https://img.shields.io/github/license/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/blob/master/LICENSE "License")
+[![Latest release](https://img.shields.io/github/v/release/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/releases/latest "Latest release")
+[![Total downloads](https://img.shields.io/github/downloads/gimicze/policetools/total?style=for-the-badge)](https://github.com/gimicze/policetools/releases/latest "Total downloads")
 
 A FiveM resource containing some tools / essentials for the police.
 
