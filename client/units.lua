@@ -92,8 +92,10 @@ function UnitsRadar:setCallsign(callsign)
     if callsign then
         TriggerServerEvent('police:setUnitCallsign', callsign)
 
-        local letter = callsign:sub(1,1)
-        local number = tonumber(callsign:sub(3))
+        local letEnd, numStart = callsign:find("-")
+
+        local letter = callsign:sub(1, letEnd - 1)
+        local number = tonumber(callsign:sub(numStart + 1))
 
         if number and Config.UnitsRadar.callsigns[letter] then
             SetResourceKvp("callsign", callsign)

@@ -65,8 +65,10 @@ function UnitsRadar:setCallsign(serverID, callsign)
         return
     end
 
-    local letter = callsign:sub(1,1)
-    local number = tonumber(callsign:sub(3))
+    local letEnd, numStart = callsign:find("-")
+
+    local letter = callsign:sub(1, letEnd - 1)
+    local number = tonumber(callsign:sub(numStart + 1))
 
     if not number or not Config.UnitsRadar.callsigns[letter] or number > 99 then
         return false
@@ -76,7 +78,7 @@ function UnitsRadar:setCallsign(serverID, callsign)
         for k, v in pairs(self.subscribers) do
             sendMessage(k, ("%s is now on duty."):format(callsign), "Radar")
         end
-    else
+    elseif not Config.UnitsRadar.announceDuty then
         sendMessage(serverID, "You're now shown on duty.", "Radar")
     end
 
