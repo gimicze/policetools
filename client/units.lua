@@ -90,9 +90,13 @@ end
 function UnitsRadar:setCallsign(callsign)
     callsign = tostring(callsign)
     if callsign then
-        TriggerServerEvent('police:setUnitCallsign', callsign)
-
         local letEnd, numStart = callsign:find("-")
+
+        if not letEnd then
+            return false
+        end
+
+        TriggerServerEvent('police:setUnitCallsign', callsign)
 
         local letter = callsign:sub(1, letEnd - 1)
         local number = tonumber(callsign:sub(numStart + 1))

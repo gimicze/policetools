@@ -67,6 +67,10 @@ function UnitsRadar:setCallsign(serverID, callsign)
 
     local letEnd, numStart = callsign:find("-")
 
+    if not letEnd then
+        return false
+    end
+
     local letter = callsign:sub(1, letEnd - 1)
     local number = tonumber(callsign:sub(numStart + 1))
 
