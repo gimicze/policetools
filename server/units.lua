@@ -98,11 +98,10 @@ function UnitsRadar:removeUnit(serverID, unsubscribe)
         for k, v in pairs(self.subscribers) do
             if Config.UnitsRadar.announceDuty and self.callsigns[serverID] then
                 sendMessage(k, ("%s went off duty."):format(self.callsigns[serverID]), "Radar")
-            else
-                sendMessage(serverID, "You're now shown off duty.", "Radar")
             end
             TriggerClientEvent('police:removeUnit', k, serverID)
         end
+        sendMessage(serverID, "You're now shown off duty.", "Radar")
         if unsubscribe ~= false then
             self:unsubscribe(serverID)
             TriggerClientEvent('police:removeBlips', serverID)
