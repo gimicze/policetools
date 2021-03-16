@@ -372,13 +372,13 @@ if Config.UnitsRadar.enableESX then
     RegisterNetEvent("esx:setJob")
     AddEventHandler(
         "esx:setJob",
-        function(source)
-            local xPlayer = ESX.GetPlayerFromId(source)
+        function(playerId)
+            local xPlayer = ESX.GetPlayerFromId(playerId)
     
             if allowedJobs[xPlayer.job.name] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
-                UnitsRadar:addUnit(source)
-            elseif UnitsRadar.active[source] then
-                UnitsRadar:removeUnit(source)
+                UnitsRadar:addUnit(playerId)
+            elseif UnitsRadar.active[playerId] then
+                UnitsRadar:removeUnit(playerId)
             end
         end
     )
@@ -386,11 +386,13 @@ if Config.UnitsRadar.enableESX then
     RegisterNetEvent("esx:playerLoaded")
     AddEventHandler(
         "esx:playerLoaded",
-        function(source, xPlayer)
-            if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[source] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
-                UnitsRadar:addUnit(source)
-            elseif UnitsRadar.active[source] then
-                UnitsRadar:removeUnit(source)
+        function(playerId, xPlayer)
+            local xPlayer = ESX.GetPlayerFromId(playerId)
+
+            if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[playerId] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
+                UnitsRadar:addUnit(playerId)
+            elseif UnitsRadar.active[playerId] then
+                UnitsRadar:removeUnit(playerId)
             end
         end
     )
