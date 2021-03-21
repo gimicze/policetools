@@ -386,7 +386,7 @@ if Config.UnitsRadar.enableESX then
     RegisterNetEvent("esx:playerLoaded")
     AddEventHandler(
         "esx:playerLoaded",
-        function(playerId, xPlayer)
+        function(playerId)
             local xPlayer = ESX.GetPlayerFromId(playerId)
 
             if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[playerId] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
