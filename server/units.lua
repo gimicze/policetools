@@ -309,7 +309,7 @@ RegisterCommand(
 			return
 		end
 
-        if action == "add" or action == "remove" then
+        if action == "add" or action == "remove" or action == "hide" or action == "show" then
             if not serverId or serverId < 1 then
                 return
             end
@@ -320,6 +320,8 @@ RegisterCommand(
                 sendMessage(source, "Player not online.")
                 return
             end
+
+            serverId = (serverId and serverId > 0) and serverId or source
         end
 
         if action == "add" then
@@ -330,13 +332,11 @@ RegisterCommand(
             UnitsRadar:removeUnit(serverId)
             sendMessage(source, ("Unsubscribed %s from police radar."):format(GetPlayerName(serverId)))
         elseif action == "hide" then
-            local userId = (serverId and serverId > 0) and serverId or source
-            UnitsRadar:hideUnit(userId)
-			sendMessage(source, ("Hidden %s on the police radar."):format(userId == source and "yourself" or GetPlayerName(serverId)))
+            UnitsRadar:hideUnit(serverId)
+			sendMessage(source, ("Hidden %s on the police radar."):format(serverId == source and "yourself" or GetPlayerName(serverId)))
         elseif action == "show" then
-            local userId = (serverId and serverId > 0) and serverId or source
-            UnitsRadar:showUnit(userId)
-			sendMessage(source, ("Shown %s on the police radar."):format(userId == source and "yourself" or GetPlayerName(serverId)))
+            UnitsRadar:showUnit(serverId)
+			sendMessage(source, ("Shown %s on the police radar."):format(serverId == source and "yourself" or GetPlayerName(serverId)))
         elseif action == "off" then
             UnitsRadar:hide()
         elseif action == "on" then
