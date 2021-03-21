@@ -374,11 +374,15 @@ if Config.UnitsRadar.enableESX then
         "esx:setJob",
         function(playerId)
             local xPlayer = ESX.GetPlayerFromId(playerId)
+
+            if xPlayer then
+                local hasItem = Config.UnitsRadar.requireItem and xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0 or true
     
-            if allowedJobs[xPlayer.job.name] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
-                UnitsRadar:addUnit(playerId)
-            elseif UnitsRadar.active[playerId] then
-                UnitsRadar:removeUnit(playerId)
+                if allowedJobs[xPlayer.job.name] and hasItem then
+                    UnitsRadar:addUnit(playerId)
+                elseif UnitsRadar.active[playerId] then
+                    UnitsRadar:removeUnit(playerId)
+                end
             end
         end
     )
@@ -389,10 +393,14 @@ if Config.UnitsRadar.enableESX then
         function(playerId)
             local xPlayer = ESX.GetPlayerFromId(playerId)
 
-            if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[playerId] and (not Config.UnitsRadar.requireItem or xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0) then
-                UnitsRadar:addUnit(playerId)
-            elseif UnitsRadar.active[playerId] then
-                UnitsRadar:removeUnit(playerId)
+            if xPlayer then
+                local hasItem = Config.UnitsRadar.requireItem and xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0 or true
+                
+                if allowedJobs[xPlayer.job.name] and hasItem then
+                    UnitsRadar:addUnit(playerId)
+                elseif UnitsRadar.active[playerId] then
+                    UnitsRadar:removeUnit(playerId)
+                end
             end
         end
     )
