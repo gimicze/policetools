@@ -352,31 +352,27 @@ RegisterCommand(
 --         AUTO-SUBSCRIBE         --
 --================================--
 
-if Config.UnitsRadar.enableESX then
-    ESX = nil
+if Config.UnitsRadar.ESXJobs then
+    ESX = exports['es_extended']:getSharedObject()
 
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
-    Config.UnitsRadar.requireItem = Config.UnitsRadar.requireItem and tostring(Config.UnitsRadar.requireItem) or false
+    Config.UnitsRadar.ESXrequireItem = Config.UnitsRadar.ESXrequireItem and tostring(Config.UnitsRadar.ESXrequireItem) or false
 
     local allowedJobs = {}
 
-    if type(Config.UnitsRadar.enableESX) == "table" then
-        for k, v in pairs(Config.UnitsRadar.enableESX) do
+    if type(Config.UnitsRadar.ESXJobs) == "table" then
+        for k, v in pairs(Config.UnitsRadar.ESXJobs) do
             allowedJobs[v] = true
         end
     else
-        allowedJobs[Config.UnitsRadar.enableESX] = true
+        allowedJobs[Config.UnitsRadar.ESXJobs] = true
     end
 
     RegisterNetEvent("esx:setJob")
-    AddEventHandler(
-        "esx:setJob",
-        function(playerId)
+    AddEventHandler("esx:setJob", function(playerId)
             local xPlayer = ESX.GetPlayerFromId(playerId)
 
             if xPlayer then
-                local hasItem = Config.UnitsRadar.requireItem and xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0 or true
+                local hasItem = Config.UnitsRadar.ESXrequireItem and xPlayer.getInventoryItem(Config.UnitsRadar.ESXrequireItem).count > 0 or true
     
                 if allowedJobs[xPlayer.job.name] and hasItem then
                     UnitsRadar:addUnit(playerId)
@@ -388,13 +384,11 @@ if Config.UnitsRadar.enableESX then
     )
     
     RegisterNetEvent("esx:playerLoaded")
-    AddEventHandler(
-        "esx:playerLoaded",
-        function(playerId)
+    AddEventHandler("esx:playerLoaded", function(playerId)
             local xPlayer = ESX.GetPlayerFromId(playerId)
 
             if xPlayer then
-                local hasItem = Config.UnitsRadar.requireItem and xPlayer.getInventoryItem(Config.UnitsRadar.requireItem).count > 0 or true
+                local hasItem = Config.UnitsRadar.ESXrequireItem and xPlayer.getInventoryItem(Config.UnitsRadar.ESXrequireItem).count > 0 or true
                 
                 if allowedJobs[xPlayer.job.name] and hasItem then
                     UnitsRadar:addUnit(playerId)
@@ -405,10 +399,8 @@ if Config.UnitsRadar.enableESX then
         end
     )
 
-    if Config.UnitsRadar.requireItem then
-        ESX.RegisterUsableItem(
-            Config.UnitsRadar.requireItem,
-            function(source)
+    if Config.UnitsRadar.ESXrequireItem then
+        ESX.RegisterUsableItem(Config.UnitsRadar.ESXrequireItem, function(source)
                 local xPlayer = ESX.GetPlayerFromId(source)
 
                 if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[source] then
@@ -418,5 +410,77 @@ if Config.UnitsRadar.enableESX then
                 end
             end
         )
+    end
+end
+
+if Config.UnitsRadar.QBCoreJobs then
+    QBCore = exports['qb-core']:GetCoreObject()
+
+    Config.UnitsRadar.QBCorerequireItem = Config.UnitsRadar.QBCorerequireItem and tostring(Config.UnitsRadar.QBCorerequireItem) or false
+
+    local allowedJobs = {}
+
+    if type(Config.UnitsRadar.QBCoreJobs) == "table" then
+        for k, v in pairs(Config.UnitsRadar.QBCoreJobs) do
+            allowedJobs[v] = true
+        end
+    else
+        allowedJobs[Config.UnitsRadar.QBCoreJobs] = true
+    end
+
+    RegisterNetEvent("QBCore:Client:OnJobUpdate")
+    AddEventHandler("QBCore:Client:OnJobUpdate", function(playerId)
+            local xPlayer = QBCore.Functions.GetPlayer(playerId)
+
+            if xPlayer then
+                local hasItem = Config.UnitsRadar.QBCorerequireItem and xPlayer.getInventoryItem(Config.UnitsRadar.QBCorerequireItem).count > 0 or true
+    
+                if allowedJobs[xPlayer.job.name] and hasItem then
+                    UnitsRadar:addUnit(playerId)
+                elseif UnitsRadar.active[playerId] then
+                    UnitsRadar:removeUnit(playerId)
+                end
+            end
+        end
+    )
+    
+    RegisterNetEvent("QBCore:Client:OnPlayerLoaded")
+    AddEventHandler("QBCore:Client:OnPlayerLoaded", function(playerId)
+            local xPlayer = QBCore.Functions.GetPlayer(playerId)
+
+            if xPlayer then
+                local hasItem = Config.UnitsRadar.QBCorerequireItem and xPlayer.getInventoryItem(Config.UnitsRadar.QBCorerequireItem).count > 0 or true
+                
+                if allowedJobs[xPlayer.job.name] and hasItem then
+                    UnitsRadar:addUnit(playerId)
+                elseif UnitsRadar.active[playerId] then
+                    UnitsRadar:removeUnit(playerId)
+                end
+            end
+        end
+    )
+
+    if Config.UnitsRadar.QBCorerequireItem then
+        QBCore.Functions.AddItem(Config.UnitsRadar.QBCorerequireItem, {
+            name = Config.UnitsRadar.QBCorerequireItem,
+            label = Config.UnitsRadar.QBCoreitemname,
+            weight = 2,
+            type = 'item',
+            image = Config.UnitsRadar.QBCoreImageName,
+            unique = false,
+            useable = true,
+            shouldClose = true,
+            combinable = nil,
+            description = 'Tracker for the police'
+        })        
+        local canUse = QBCore.Functions.CanUseItem(Config.UnitsRadar.QBCorerequireItem)
+        if not canUse then return end
+        local xPlayer = QBCore.Functions.GetPlayer(source)
+
+        if allowedJobs[xPlayer.job.name] and not UnitsRadar.active[source] then
+            UnitsRadar:addUnit(source)
+        elseif UnitsRadar.active[source] then
+            UnitsRadar:removeUnit(source)
+        end
     end
 end
