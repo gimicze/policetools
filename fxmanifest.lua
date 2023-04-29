@@ -7,11 +7,13 @@ version '1.1.8'
 description 'Blips and tint meter for police'
 
 client_scripts {
-    'config.lua',
     'client/*.lua',
 }
 
 server_scripts {
-    'config.lua',
     'server/*.lua'
+}
+
+shared_scripts {
+    'config.lua'
 }
