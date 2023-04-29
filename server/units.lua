@@ -353,9 +353,7 @@ RegisterCommand(
 --================================--
 
 if Config.UnitsRadar.enableESX then
-    ESX = nil
-
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+    ESX = exports["es_extended"]:getSharedObject()
 
     Config.UnitsRadar.requireItem = Config.UnitsRadar.requireItem and tostring(Config.UnitsRadar.requireItem) or false
 
