@@ -224,7 +224,7 @@ AddEventHandler(
         if source > 0 or not serverID or serverID < 1 then
             return
         end
-        UnitsRadar:shotUnit(serverID)
+        UnitsRadar:showUnit(serverID)
     end
 )
 
