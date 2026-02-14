@@ -3,6 +3,9 @@
 [![License GNU-GPL v3](https://img.shields.io/github/license/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/blob/master/LICENSE "License")
 [![Latest release](https://img.shields.io/github/v/release/gimicze/policetools?style=for-the-badge)](https://github.com/gimicze/policetools/releases/latest "Latest release")
 [![Total downloads](https://img.shields.io/github/downloads/gimicze/policetools/total?style=for-the-badge)](https://github.com/gimicze/policetools/releases/latest "Total downloads")
+![Maintenance](https://img.shields.io/badge/status-unmaintained-red?style=for-the-badge)
+
+> No longer maintained. Contact the author via cfx.re Forum to take over.
 
 A FiveM resource containing some tools / essentials for the police.
 
